@@ -15,7 +15,7 @@ router.get('/page', (req, res) => {
 
 router.get('/error', (req, res) => {
     res.send('error')
-    const error = new Error('Permissions Denied');
+    const error = new Error('401: Permissions Denied');
     error.statusCode = 401;
     throw error
 })

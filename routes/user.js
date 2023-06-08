@@ -1,18 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const userController = require("../handlers/userController");
-const bodyParser = require('body-parser')
-const urlencodedParser = bodyParser.urlencoded({ extended: true })
-const methodOverride = require('method-override')
-const { upload } = require('../services/fileService');
+const { upload } = require('../constants');
+const {
+    UserParamsValidate,
+} = require('../middleware/userMiddleware');
 
+router.put('/:id', UserParamsValidate, userController.updateUser)
 
-router.use(methodOverride('_method'));
-
-
-router.put('/:id', urlencodedParser, userController.updateUser)
-
-router.post('/', urlencodedParser, userController.createUser)
+router.post('/', UserParamsValidate, userController.createUser)
 
 router.get('/', userController.getUsers)
 

@@ -6,14 +6,19 @@ const {
     deletedUser,
     updateUserFile,
 } = require('../services/UserService');
-const express = require('express');
+
 /**
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 const getUsers = async (req, res) => {
-    res.render('users.ejs', {users: await getAllUsers()})
+    try {
+        const allUser = await getAllUsers()
+        res.status(200).json(allUser);
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
+    }
 };
 
 /**
@@ -22,11 +27,16 @@ const getUsers = async (req, res) => {
  * @returns {Promise<void>}
  */
 const getOneUser = async (req, res) => {
-    if(await findUser(req.params.id) === null){
-        res.status(404).json({ error: 'user not found' });
+    try {
+        const findOneUser = await findUser(req.params.id)
+        if(findOneUser === null){
+            res.status(404).json({  error: 'user not found'  });
+        }else{
+            res.status(200).json(findOneUser);
+        }
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
     }
-
-    res.render('users.ejs', {users: [await findUser(req.params.id)]})
 };
 
 /**
@@ -35,8 +45,12 @@ const getOneUser = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createUser = async (req, res) => {
-    await create({name: req.body.name, age: req.body.age});
-    res.redirect('/users');
+    try {
+        await create({name: req.body.name, age: req.body.age});
+        res.status(201).json({ user: 'create' });
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
+    }
 };
 
 /**
@@ -45,8 +59,12 @@ const createUser = async (req, res) => {
  * @returns {Promise<void>}
  */
 const updateUser = async (req, res) => {
-    await update({name: req.body.name, age: req.body.age, id: req.params.id});
-    res.redirect('/users');
+    try {
+        await update({name: req.body.name, age: req.body.age, id: req.params.id});
+        res.status(200).json({ user: 'user ' + req.params.id + ' updated' });
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
+    }
 };
 
 /**
@@ -55,8 +73,12 @@ const updateUser = async (req, res) => {
  * @returns {Promise<void>}
  */
 const deleteUser = async (req, res) => {
-    await deletedUser(req.params.id);
-    res.redirect('/users');
+    try {
+        await deletedUser(req.params.id);
+        res.status(200).json({ user: 'user ' + req.params.id + ' deleted' });
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
+    }
 };
 
 /**
@@ -65,8 +87,12 @@ const deleteUser = async (req, res) => {
  * @returns {Promise<void>}
  */
 const updateFile = async (req, res) => {
-    await updateUserFile({imageName: req.file.path.split('\\').pop(), id: req.params.id});
-    res.redirect('/users');
+    try {
+        await updateUserFile({imageName: req.file.path.split('\\').pop(), id: req.params.id});
+        res.status(200).json({ user: 'user ' + req.params.id + ' updated image' });
+    } catch (ex) {
+        res.status(400).json({ error: ex.toString() });
+    }
 };
 
 
