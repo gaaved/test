@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div>
+            <h1>Hello</h1>
+            <form action="/users" method="post">
+                <label for="team_name">Name: </label>
+                <input
+                    id="team_name"
+                    type="text"
+                    name="name" />
+                <label for="team_name">Age: </label>
+                <input
+                    id="team_name"
+                    type="number"
+                    name="age" />
+                  <input type="submit" value="OK" />
+            </form>
+
+            <table id="painting" cellspacing="2" border="1" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Photo</th>
+                        <th>Upload Photo</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>View</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <% users.forEach((user) => { %>
+                    <tr>
+                    <td>
+                        <%= user.id %>
+                    </td>
+                    <td>
+                    <div>
+                        <% if(user.imageName === ''){ %>
+                            <img src="/images/default.jpg" width="50" alt="Image">
+                        <% } else{ %>
+                            <img src="/images/<%= user.imageName%>" width="50" alt="Image">
+                        <% } %>
+                    </div>
+                    </td>
+                        <form method="post" enctype="multipart/form-data" action="/users/uploadFile/<%= user.id %>">
+                    <td>
+                        <input name="avatar" type="file" />
+                        <input type="submit" value="upload">
+                    </td>
+                        </form>
+                        <form method="post" action="/users/<%= user.id %>?_method=PUT">
+                    <td>
+                        <input type="text" name="name" value="<%= user.name %>">
+                    </td>
+                    <td>
+                        <input type="number" name="age" value="<%= user.age %>">
+                    </td>
+                    <td>
+                        <a href = "/users/<%= user.id %>">View</a>
+                    </td>
+                    <td>
+                        <input type="submit" name="_method" value="EDIT">
+                    </td>
+                        </form>
+                        <form method="post" action="/users/<%= user.id %>?_method=DELETE">
+                    <td>
+                        <input type="submit" name="_method" value="DELETE">
+                    </td>
+                        </form>
+                        <% }) %>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
